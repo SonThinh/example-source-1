@@ -41,13 +41,6 @@ class Admin extends Model
         $this->attributes['password'] = bcrypt($value);
     }
 
-    public function scopeRole($query, $role)
-    {
-        return $query->whereHas('roles', function ($query) use ($role) {
-            return $query->where('name', $role);
-        });
-    }
-
     public function getCreatedAtAttribute($date): string
     {
         return Carbon::createFromTimestamp(strtotime($date))
@@ -60,5 +53,17 @@ class Admin extends Model
         return Carbon::createFromTimestamp(strtotime($date))
                      ->timezone(config('app.timezone'))
                      ->format('Y-m-d H:i:s');
+    }
+
+    public function scopeRole($query, $role)
+    {
+        return $query->whereHas('roles', function ($query) use ($role) {
+            return $query->where('name', $role);
+        });
+    }
+
+    public function scopeStatus($query, $value)
+    {
+        return $query->where('is_valid', $value);
     }
 }
