@@ -23,6 +23,7 @@ class Admin extends Model
         'name',
         'login_id',
         'password',
+        'is_valid',
         'updated_at',
     ];
 
