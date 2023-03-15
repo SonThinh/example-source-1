@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\RoleEnum;
+use App\Http\Controllers\CMS\AdminController;
 use App\Http\Controllers\CMS\AuthController;
 use App\Http\Controllers\User\QuestionController;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +24,9 @@ Route::middleware('cms_locale')->group(function () {
         Route::middleware('auth:admin')->group(function () {
             Route::get('me', [AuthController::class, 'profile']);
             Route::delete('logout', [AuthController::class, 'logout']);
+            Route::middleware('role:'.RoleEnum::ADMIN)->group(function () {
+                Route::apiResource('admins', AdminController::class);
+            });
         });
     });
 });
