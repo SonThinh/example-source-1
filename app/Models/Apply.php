@@ -14,7 +14,8 @@ class Apply extends Model
 
     protected $fillable = [
         'apply_date',
-        'data ',
+        'data',
+        'user_id',
     ];
 
     protected $casts = [

@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Contracts\QuestionRepository;
+use App\Enums\QuestionTypeEnum;
 use App\Models\Question;
 use Illuminate\Container\Container as Application;
 

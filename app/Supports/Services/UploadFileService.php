@@ -14,9 +14,9 @@ class UploadFileService
      * @param $uploadedFile
      * @param array $oldPath
      * @param string|null $prefix
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|\Illuminate\Support\Collection|null
+     * @return string
      */
-    public function uploadFile($uploadedFile, array $oldPath = [], string $prefix = null)
+    public function uploadFile($uploadedFile, array $oldPath = [], string $prefix = null): ?string
     {
         if (! empty($oldPath)) {
             $this->deleteFile($oldPath);
@@ -57,21 +57,13 @@ class UploadFileService
     public function upload(UploadedFile $uploadedFile, string $prefix = null)
     {
         // add new image
-        $name = $uploadedFile->getClientOriginalName();
         $filename = sprintf('file_%s_%s.%s', now()->timestamp, Str::random(8), $uploadedFile->getClientOriginalExtension());
         $path = $this->imageDirectoryPath();
-        $page = isset($prefix) ? $prefix.'/' : null;
-        $filePath = $path.'/'.$page.$filename;
+        $filePath = $path.'/'.$filename;
         $option = ['visibility' => 'public'];
         $this->storageDriver()->put($filePath, file_get_contents($uploadedFile), $option);
 
-        return File::create([
-            'path'             => $filePath,
-            'name'             => $name,
-            'size'             => $uploadedFile->getSize(),
-            'mime_type'        => $uploadedFile->getClientMimeType(),
-            'upload_date_time' => now()->format('Y-m-d H:i:s'),
-        ]);
+        return $this->imagePathS3($filePath);
     }
 
     /**
@@ -89,33 +81,5 @@ class UploadFileService
     public function imagePathS3($path): string
     {
         return $this->storageDriver()->temporaryUrl($path, now()->addDay());
-    }
-
-    public function replaceFile($uploadedFile, File $file, string $type): ?bool
-    {
-        if ($uploadedFile instanceof UploadedFile) {
-            return $this->replace($uploadedFile, $file, $type);
-        }
-
-        return null;
-    }
-
-    public function replace(UploadedFile $uploadedFile, File $file): bool
-    {
-        // replace image
-        $name = $uploadedFile->getClientOriginalName();
-        $filePath = $file->url;
-        $this->deleteFile($filePath);
-
-        $option = ['visibility' => 'public'];
-        $this->storageDriver()->put($filePath, file_get_contents($uploadedFile), $option);
-
-        return $file->update([
-            'path'        => $filePath,
-            'name'        => $name,
-            'size'        => $uploadedFile->getSize(),
-            'mime_type'   => $uploadedFile->getClientMimeType(),
-            'uploaded_at' => now()->format('Y-m-d H:i:s'),
-        ]);
     }
 }

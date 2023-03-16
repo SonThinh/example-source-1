@@ -17,6 +17,7 @@ class CreateAppliesTable extends Migration
             $table->uuid('id')->primary();
             $table->dateTime('apply_date');
             $table->json('data');
+            $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
