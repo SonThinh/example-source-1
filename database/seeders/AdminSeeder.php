@@ -17,7 +17,7 @@ class AdminSeeder extends Seeder
     {
         $admin = Admin::create([
             'login_id'      => 'admin',
-            'password'      => 'a6TVxQZK9DQc',
+            'password'      => '1234567',
             'name'          => 'Admin',
         ]);
 
@@ -25,7 +25,7 @@ class AdminSeeder extends Seeder
 
         $operate = Admin::create([
             'login_id'      => 'operator',
-            'password'      => 'lxzVop4vkQo',
+            'password'      => '1234567',
             'name'          => 'Operator',
         ]);
 
